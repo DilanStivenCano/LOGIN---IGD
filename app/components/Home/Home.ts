@@ -1,5 +1,5 @@
 import "./components/index.js";
-
+import { getPosts } from "../../services/db.js";
 import dataStories from "./dataStories.js";
 console.log(dataStories);
 
@@ -23,23 +23,31 @@ export class Home extends HTMLElement{
             storieCard.setAttribute(AttributeStories.username, data.username);
             this.stories.push(storieCard)
         });
-
-        dataPost.forEach((data)=>{
-            const postCard = this.ownerDocument.createElement("my-post") as MyPost;
-            postCard.setAttribute(AttributePost.pictureprofile, data.pictureprofile);
-            postCard.setAttribute(AttributePost.user, data.user);
-            postCard.setAttribute(AttributePost.ubi, data.ubi);
-            postCard.setAttribute(AttributePost.content, data.content);
-            postCard.setAttribute(AttributePost.likes, data.likes);
-            postCard.setAttribute(AttributePost.description, data.description);
-            postCard.setAttribute(AttributePost.coments, data.coments);
-            postCard.setAttribute(AttributePost.date, data.date);
-            this.posts.push(postCard)
-        });
     }
 
-    connectedCallback(){
-        this.render();
+      async connectedCallback(){
+        try {
+            const posts = await getPosts();
+    
+            posts?.filter(post => post.time)
+                .sort((postA, postB) => postB.time - postA.time)
+                .forEach((data) => {
+                    const postCard = this.ownerDocument.createElement("my-post") as MyPost;
+                    postCard.setAttribute(AttributePost.pictureprofile, data.pictureprofile);
+                    postCard.setAttribute(AttributePost.user, data.user);
+                    postCard.setAttribute(AttributePost.ubi, data.ubi);
+                    postCard.setAttribute(AttributePost.content, data.content);
+                    postCard.setAttribute(AttributePost.likes, data.likes);
+                    postCard.setAttribute(AttributePost.description, data.description);
+                    postCard.setAttribute(AttributePost.coments, data.coments);
+                    postCard.setAttribute(AttributePost.date, data.date);
+                    this.posts.push(postCard)
+            });
+    
+            this.render();
+        } catch(error) {
+            console.error(error);
+        } 
     }
 
     render(){

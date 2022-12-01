@@ -4,6 +4,7 @@ var Screens;
     Screens[Screens["login"] = 0] = "login";
     Screens[Screens["register"] = 1] = "register";
     Screens[Screens["home"] = 2] = "home";
+    Screens[Screens["createPost"] = 3] = "createPost";
 })(Screens || (Screens = {}));
 class AppContainer extends HTMLElement {
     constructor() {
@@ -12,23 +13,35 @@ class AppContainer extends HTMLElement {
         this.attachShadow({ mode: 'open' });
     }
     connectedCallback() {
-        var _a, _b;
         this.render();
+        this.setEventListeners();
+    }
+    setEventListeners() {
+        var _a, _b, _c, _d;
         const GoSignUp = (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.querySelector("app-register");
         GoSignUp === null || GoSignUp === void 0 ? void 0 : GoSignUp.addEventListener("register-success", () => {
-            var _a;
             this.screen = Screens.login;
             this.render();
-            const login = (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.querySelector("app-login");
-            login === null || login === void 0 ? void 0 : login.addEventListener("login-success", () => {
-                this.screen = Screens.home;
-                this.render();
-            });
+            this.setEventListeners();
         });
         const login = (_b = this.shadowRoot) === null || _b === void 0 ? void 0 : _b.querySelector("app-login");
         login === null || login === void 0 ? void 0 : login.addEventListener("login-success", () => {
             this.screen = Screens.home;
             this.render();
+            this.setEventListeners();
+        });
+        const createPost = (_c = this.shadowRoot) === null || _c === void 0 ? void 0 : _c.querySelector("app-create-post");
+        createPost === null || createPost === void 0 ? void 0 : createPost.addEventListener('form-fullfilled', () => {
+            console.log('se llamo el event listener afuera');
+            this.screen = Screens.home;
+            this.render();
+            this.setEventListeners();
+        });
+        const myNav = (_d = this.shadowRoot) === null || _d === void 0 ? void 0 : _d.querySelector("my-nav");
+        myNav === null || myNav === void 0 ? void 0 : myNav.addEventListener('create-post', () => {
+            this.screen = Screens.createPost;
+            this.render();
+            this.setEventListeners();
         });
     }
     render() {
@@ -50,6 +63,9 @@ class AppContainer extends HTMLElement {
                 break;
             case Screens.register:
                 this.shadowRoot.innerHTML = "<app-register></app-register>";
+                break;
+            case Screens.createPost:
+                this.shadowRoot.innerHTML = "<app-create-post></app-create-post>";
                 break;
             default:
                 break;

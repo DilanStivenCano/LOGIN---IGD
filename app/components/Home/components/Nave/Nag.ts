@@ -6,6 +6,16 @@ class MyNag extends HTMLElement{
 
     connectedCallback(){
         this.render();
+
+        const btn = this.shadowRoot?.querySelector("button");
+        btn?.addEventListener("click",()=>{
+            const event: CustomEvent = new CustomEvent("create-post",{
+                composed: true
+            });
+
+            this.dispatchEvent(event);
+        });
+
     }
 
     render(){
@@ -36,11 +46,13 @@ class MyNag extends HTMLElement{
                         <h3>Notifications</h3>
                     </div>
                     <div class="IconText">
-                        <img src="https://cdn-icons-png.flaticon.com/512/5728/5728191.png">
-                        <h3>New</h3>
+                        <button type="submit" style="border: 0; margin: 0; padding: 0; display: flex">
+                            <img src="https://cdn-icons-png.flaticon.com/512/5728/5728191.png">
+                            <h3>New</h3>
+                        </button>
                     </div>
                     <div class="IconText">
-                        <img class="ProfilePic" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80">
+                        <img class="ProfilePic" src="https://yt3.ggpht.com/GUW78kIdMM2mVjl-c1rkSD8DqNYSRZAfTUTie3j4xKFN6agTpdb9UiMDGwQB2yuoDpKB1a8QNn8=s900-c-k-c0x00ffffff-no-rj">
                         <h3>Profile</h3>
                     </div>
                 </section>

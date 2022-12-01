@@ -1,4 +1,14 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import "./components/index.js";
+import { getPosts } from "../../services/db.js";
 import dataStories from "./dataStories.js";
 console.log(dataStories);
 import dataPost from "./dataPost.js";
@@ -17,21 +27,29 @@ export class Home extends HTMLElement {
             storieCard.setAttribute(AttributeStories.username, data.username);
             this.stories.push(storieCard);
         });
-        dataPost.forEach((data) => {
-            const postCard = this.ownerDocument.createElement("my-post");
-            postCard.setAttribute(AttributePost.pictureprofile, data.pictureprofile);
-            postCard.setAttribute(AttributePost.user, data.user);
-            postCard.setAttribute(AttributePost.ubi, data.ubi);
-            postCard.setAttribute(AttributePost.content, data.content);
-            postCard.setAttribute(AttributePost.likes, data.likes);
-            postCard.setAttribute(AttributePost.description, data.description);
-            postCard.setAttribute(AttributePost.coments, data.coments);
-            postCard.setAttribute(AttributePost.date, data.date);
-            this.posts.push(postCard);
-        });
     }
     connectedCallback() {
-        this.render();
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const posts = yield getPosts();
+                posts === null || posts === void 0 ? void 0 : posts.filter(post => post.time).sort((postA, postB) => postB.time - postA.time).forEach((data) => {
+                    const postCard = this.ownerDocument.createElement("my-post");
+                    postCard.setAttribute(AttributePost.pictureprofile, data.pictureprofile);
+                    postCard.setAttribute(AttributePost.user, data.user);
+                    postCard.setAttribute(AttributePost.ubi, data.ubi);
+                    postCard.setAttribute(AttributePost.content, data.content);
+                    postCard.setAttribute(AttributePost.likes, data.likes);
+                    postCard.setAttribute(AttributePost.description, data.description);
+                    postCard.setAttribute(AttributePost.coments, data.coments);
+                    postCard.setAttribute(AttributePost.date, data.date);
+                    this.posts.push(postCard);
+                });
+                this.render();
+            }
+            catch (error) {
+                console.error(error);
+            }
+        });
     }
     render() {
         var _b;
